@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Conexão MySQL -->
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">
+            jdbc:mysql://localhost:3306/sonode?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true
+        </property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">admin</property>
+
+        <!-- Dialeto MySQL 8+ -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+
+        <!-- Mostrar SQL no console -->
+        <property name="hibernate.show_sql">true</property>
+
+        <!-- Atualiza esquema automaticamente (update / validate / create-drop) -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Mapeamentos -->
+        <mapping class="br.edu.utfpr.sonode.model.Usuario"/>
+        <mapping class="br.edu.utfpr.sonode.model.Projeto"/>
+        <mapping class="br.edu.utfpr.sonode.model.VersaoProjeto"/>
+    </session-factory>
+</hibernate-configuration>
