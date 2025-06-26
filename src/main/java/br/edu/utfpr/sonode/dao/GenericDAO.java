@@ -1,54 +1,83 @@
-// GenericDAO.java
 package br.edu.utfpr.sonode.dao;
 
 import br.edu.utfpr.sonode.util.JPAUtil;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import java.io.Serializable;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import java.util.List;
 
-public class GenericDAO<T, ID extends Serializable> {
-    private final Class<T> clazz;
+public abstract class GenericDAO<T> {
 
-    public GenericDAO(Class<T> clazz) {
-        this.clazz = clazz;
+    protected EntityManager em;
+    private Class<T> entityClass;
+
+    public GenericDAO(Class<T> entityClass) {
+        this.entityClass = entityClass;
     }
-    protected Session getSession() {
-        return JPAUtil.getSessionFactory().openSession();
+
+    public void save(T entity) {
+        em = JPAUtil.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.persist(entity);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
     }
-    public void salvar(T entity) {
-        Session s = getSession();
-        Transaction tx = s.beginTransaction();
-        s.persist(entity);
-        tx.commit();
-        s.close();
+
+    public T update(T entity) {
+        em = JPAUtil.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        T updatedEntity = null;
+        try {
+            transaction.begin();
+            updatedEntity = em.merge(entity);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return updatedEntity;
     }
-    public void atualizar(T entity) {
-        Session s = getSession();
-        Transaction tx = s.beginTransaction();
-        s.merge(entity);
-        tx.commit();
-        s.close();
+
+    public void delete(T entity) {
+        em = JPAUtil.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.remove(em.contains(entity) ? entity : em.merge(entity));
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
     }
-    public void remover(T entity) {
-        Session s = getSession();
-        Transaction tx = s.beginTransaction();
-        s.remove(entity);
-        tx.commit();
-        s.close();
+
+    public T findById(Object id) {
+        em = JPAUtil.getEntityManager();
+        T entity = em.find(entityClass, id);
+        em.close();
+        return entity;
     }
-    @SuppressWarnings("unchecked")
-    public T buscarPorId(ID id) {
-        Session s = getSession();
-        T obj = s.get(clazz, id);
-        s.close();
-        return obj;
-    }
-    @SuppressWarnings("unchecked")
-    public List<T> listarTodos() {
-        Session s = getSession();
-        List<T> list = s.createQuery("from " + clazz.getSimpleName()).list();
-        s.close();
-        return list;
+
+    public List<T> findAll() {
+        em = JPAUtil.getEntityManager();
+        List<T> entities = em.createQuery("FROM " + entityClass.getName(), entityClass).getResultList();
+        em.close();
+        return entities;
     }
 }

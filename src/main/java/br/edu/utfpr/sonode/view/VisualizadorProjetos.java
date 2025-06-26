@@ -1,108 +1,128 @@
 package br.edu.utfpr.sonode.view;
 
 import br.edu.utfpr.sonode.controller.ProjetoController;
-import br.edu.utfpr.sonode.controller.VersaoProjetoController;
 import br.edu.utfpr.sonode.model.Projeto;
-import br.edu.utfpr.sonode.model.VersaoProjeto;
+import br.edu.utfpr.sonode.model.Usuario;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class VisualizadorProjetos extends JFrame {
-    private final ProjetoController projetoCtrl       = new ProjetoController();
-    private final VersaoProjetoController versaoCtrl = new VersaoProjetoController();
+public class VisualizadorProjetos extends JDialog {
+    private JTable tabelaProjetos;
+    private DefaultTableModel tableModel;
+    private ProjetoController projetoController;
+    private Usuario usuarioLogado;
+    private Frame owner;
+    private JTextField txtFiltro;
 
-    private final JComboBox<Projeto>          cbProjetos = new JComboBox<>();
-    private final JLabel                      lblAutor    = new JLabel("Autor: ");
-    private final DefaultListModel<VersaoProjeto> versoesModel = new DefaultListModel<>();
-    private final JList<VersaoProjeto>        lstVersoes = new JList<>(versoesModel);
+    public VisualizadorProjetos(Frame owner, Usuario usuario) {
+        super(owner, "Visualizador de Projetos", true);
+        this.owner = owner;
+        this.usuarioLogado = usuario;
+        this.projetoController = new ProjetoController();
 
-    public VisualizadorProjetos() {
-        super("Visualizador de Projetos");
-        setLayout(new BorderLayout(5,5));
+        setSize(800, 600);
+        setLocationRelativeTo(owner);
+        setLayout(new BorderLayout(10, 10));
 
-        // Norte: combo de Projetos
-        add(cbProjetos, BorderLayout.NORTH);
+    
+        JPanel filtroPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        filtroPanel.add(new JLabel("Filtrar por nome do projeto ou dono:"));
+        txtFiltro = new JTextField(20);
+        JButton btnFiltrar = new JButton("Filtrar");
+        filtroPanel.add(txtFiltro);
+        filtroPanel.add(btnFiltrar);
+        add(filtroPanel, BorderLayout.NORTH);
 
-        // Centro: lista de versões
-        add(new JScrollPane(lstVersoes), BorderLayout.CENTER);
+        
+        String[] colunas = {"ID", "Nome", "Descrição", "Dono", "Data de Criação"};
+        tableModel = new DefaultTableModel(colunas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Torna a tabela não editável
+            }
+        };
+        tabelaProjetos = new JTable(tableModel);
+        add(new JScrollPane(tabelaProjetos), BorderLayout.CENTER);
 
-        // Sul: label do autor
-        add(lblAutor, BorderLayout.SOUTH);
+        
+        JPanel botoesPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnDetalhes = new JButton("Ver Detalhes/Editar");
+        JButton btnExcluir = new JButton("Excluir Projeto");
+        JButton btnNovo = new JButton("Novo Projeto");
+        
+        botoesPanel.add(btnNovo);
+        botoesPanel.add(btnDetalhes);
+        botoesPanel.add(btnExcluir);
+        add(botoesPanel, BorderLayout.SOUTH);
 
-        // Popula combo
-        List<Projeto> projetos = projetoCtrl.listarProjetos();
+        
+        btnFiltrar.addActionListener(e -> carregarProjetos());
+        
+        btnNovo.addActionListener(e -> {
+            new CadastroProjeto(owner, usuarioLogado, null).setVisible(true);
+            carregarProjetos();
+        });
+
+        btnDetalhes.addActionListener(e -> abrirDetalhesProjeto());
+        btnExcluir.addActionListener(e -> excluirProjeto());
+
+        carregarProjetos();
+    }
+
+    private void carregarProjetos() {
+        tableModel.setRowCount(0); 
+        String termo = txtFiltro.getText();
+        List<Projeto> projetos = projetoController.filtrarProjetos(termo);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         for (Projeto p : projetos) {
-            cbProjetos.addItem(p);
+            tableModel.addRow(new Object[]{
+                    p.getId(),
+                    p.getNome(),
+                    p.getDescricao(),
+                    p.getDono().getNome(),
+                    p.getDataCriacao().format(formatter)
+            });
         }
-
-        // Render do combo para mostrar apenas o nome do Projeto
-        cbProjetos.setRenderer(new DefaultListCellRenderer(){
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value,
-                                                          int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Projeto) {
-                    setText(((Projeto) value).getNome());
-                }
-                return this;
-            }
-        });
-
-        // Ao trocar seleção, atualiza lista e autor
-        cbProjetos.addActionListener(e -> atualizarListaEVersoes());
-
-        // Seleciona o primeiro item (se existir)
-        if (!projetos.isEmpty()) {
-            cbProjetos.setSelectedIndex(0);
-            atualizarListaEVersoes();
-        }
-
-        setSize(600,400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setVisible(true);
     }
 
-    private void atualizarListaEVersoes() {
-        Projeto sel = (Projeto) cbProjetos.getSelectedItem();
-        if (sel == null) return;
-
-        // Atualiza autor
-        lblAutor.setText("Autor: " + sel.getCriador().getNome());
-
-        // Busca versões e preenche modelo
-        versoesModel.clear();
-        List<VersaoProjeto> versoes = versaoCtrl.listarVersoesDoProjeto(sel);
-        for (VersaoProjeto v : versoes) {
-            versoesModel.addElement(v);
+    private void abrirDetalhesProjeto() {
+        int selectedRow = tabelaProjetos.getSelectedRow();
+        if (selectedRow >= 0) {
+            Long projetoId = (Long) tableModel.getValueAt(selectedRow, 0);
+            Projeto projeto = projetoController.buscarProjetoCompletoPorId(projetoId);
+            new TelaProjeto(owner, usuarioLogado, projeto).setVisible(true);
+            carregarProjetos(); 
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um projeto na tabela.", "Aviso", JOptionPane.WARNING_MESSAGE);
         }
-
-        // Render do JList para exibir nº, nomeArquivo e dataHora formatada
-        lstVersoes.setCellRenderer(new DefaultListCellRenderer(){
-            private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value,
-                                                          int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof VersaoProjeto) {
-                    VersaoProjeto vp = (VersaoProjeto) value;
-                    setText(
-                        "v" + vp.getNumero()
-                        + " – " + vp.getNomeArquivo()
-                        + " (" + vp.getDataHora().format(dtf) + ")"
-                    );
-                }
-                return this;
-            }
-        });
     }
 
-    // Para teste isolado:
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(VisualizadorProjetos::new);
+    private void excluirProjeto() {
+        int selectedRow = tabelaProjetos.getSelectedRow();
+        if (selectedRow >= 0) {
+            Long projetoId = (Long) tableModel.getValueAt(selectedRow, 0);
+            Projeto projeto = projetoController.buscarProjetoCompletoPorId(projetoId);
+            
+            if(!projeto.getDono().getId().equals(usuarioLogado.getId())) {
+                 JOptionPane.showMessageDialog(this, "Você só pode excluir projetos que você criou.", "Acesso Negado", JOptionPane.ERROR_MESSAGE);
+                 return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Tem certeza que deseja excluir o projeto '" + projeto.getNome() + "'?",
+                    "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                projetoController.excluirProjeto(projeto);
+                carregarProjetos();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um projeto para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }

@@ -1,18 +1,19 @@
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\App.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\controller\ProjetoController.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\controller\UsuarioController.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\controller\VersaoProjetoController.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\dao\GenericDAO.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\dao\ProjetoDAO.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\dao\UsuarioDAO.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\dao\VersaoProjetoDAO.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\model\Projeto.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\model\Usuario.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\model\VersaoProjeto.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\util\JPAUtil.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\view\CadastroProjeto.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\view\CadastroUsuario.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\view\CadastroVersao.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\view\MenuPrincipal.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\view\TelaProjeto.java
-C:\Users\Arthu\OneDrive\Área de Trabalho\Sonode\Sonode\src\main\java\br\edu\utfpr\sonode\view\VisualizadorProjetos.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\model\VersaoProjeto.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\view\MenuPrincipal.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\App.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\controller\ProjetoController.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\view\CadastroProjeto.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\dao\ProjetoDAO.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\dao\VersaoProjetoDAO.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\dao\UsuarioDAO.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\dao\GenericDAO.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\view\TelaProjeto.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\model\Usuario.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\model\Comentario.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\view\TelaLogin.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\view\VisualizadorProjetos.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\dao\ComentarioDAO.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\controller\UsuarioController.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\model\Projeto.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\view\CadastroUsuario.java
+C:\Users\Andre\Documents\NetBeansProjects\Sonode\src\main\java\br\edu\utfpr\sonode\util\JPAUtil.java

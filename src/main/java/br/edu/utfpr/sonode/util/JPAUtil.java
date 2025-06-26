@@ -1,24 +1,35 @@
 package br.edu.utfpr.sonode.util;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
 
 public class JPAUtil {
-    private static final SessionFactory sessionFactory;
 
-    static {
-        try {
-            // Procura o hibernate.cfg.xml no classpath (src/main/resources)
-            sessionFactory = new Configuration()
-                .configure() // sem parâmetros, já lê hibernate.cfg.xml
-                .buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Erro ao criar SessionFactory: " + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+    private static final String PERSISTENCE_UNIT_NAME = "sonode-pu";
+
+    private static EntityManagerFactory factory;
+
+    private JPAUtil() {
     }
 
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+    public static EntityManagerFactory getEntityManagerFactory() {
+        if (factory == null) {
+            factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        }
+        return factory;
+    }
+
+    public static EntityManager getEntityManager() {
+        return getEntityManagerFactory().createEntityManager();
+    }
+
+
+    public static void shutdown() {
+        if (factory != null) {
+            factory.close();
+            factory = null;
+        }
     }
 }
